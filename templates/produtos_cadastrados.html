@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Lista de Produtos</h1>
+  <h1>Lista de Produtos</h1>{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
 
   <table class="table">
     <thead>
@@ -30,13 +37,6 @@
       {% endfor %}
     </tbody>
   </table>
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-success" role="alert">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
 
 {% for produto in page_obj %}
     <!-- Exibir informações do produto -->
@@ -45,6 +45,7 @@
 <!-- Conteúdo posterior ao loop de produtos -->
 
 <!-- Links de paginação -->
+</br></br>
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
