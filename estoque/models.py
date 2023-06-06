@@ -5,7 +5,7 @@ class Produto(models.Model):
     descricao = models.TextField()
     barcode = models.CharField(max_length=50, blank=True, null=True)
     quantidade = models.PositiveIntegerField(default=0)
-    data_fabricacao = models.DateField()
+    data_fabricacao = models.DateField(blank=True, null=True)
     data_validade = models.DateField(blank=True, null=True)
 
     def __str__(self):

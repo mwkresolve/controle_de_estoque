@@ -7,5 +7,7 @@ urlpatterns = [
     path('', HomePageView, name='home'),
 
     path('cadastrar-produto/', cadastrar_produto, name='cadastrar_produto'),
+    path('listar-produtos/', produtos_cadastrados, name='produtos_cadastrados'),
+    path('listar-produtos/delete/<int:pk>/', produto_delete, name='produto_delete'),
 
 ]
