@@ -32,6 +32,11 @@
               {{ form.prateleira }}
             </div>
 
+              <div class="form-group">
+                <label for="{{ form.quantidade.id_for_label }}">Quantidade</label>
+                {{ form.quantidade }}
+              </div>
+
             <button type="submit" class="btn btn-primary">Salvar</button>
           </form>
           {% if messages %}

@@ -11,6 +11,10 @@ class ProdutoForm(forms.ModelForm):
             'data_fabricacao': DateInput(),
             'data_validade': DateInput(),
         }
+        error_messages = {
+            'barcode': {
+                'unique': 'Já existe um produto cadastrado com este código de barras.',
+            }}
 
 
 class EditarProdutoForm(forms.ModelForm):
@@ -42,3 +46,6 @@ class EnderecarProdutoForm(forms.Form):
     prateleira = forms.IntegerField(min_value=1, max_value=50,
                                     widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                     label='Prateleira')
+    quantidade = forms.IntegerField(min_value=0, max_value=500000000000,
+                                    widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                                    label='Quantidade')

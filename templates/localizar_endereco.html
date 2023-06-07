@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Localizar Endereço do Produto</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="barcode">Código de Barras:</label>
+      <input type="text" class="form-control" id="barcode" name="barcode">
+    </div>
+    <button type="submit" class="btn btn-primary">Localizar</button>
+  </form>
+
+  {% if enderecos %}
+    <h2>Endereços do Produto</h2>
+    <ul>
+      {% for endereco in enderecos %}
+        <li>R{{ endereco.rua }}{{ endereco.andar }}{{ endereco.prateleira }} | quantidade: {{ endereco.quantidade }}</li>
+      {% endfor %}
+
+    </ul>
+    {% if soma_quantidades %}
+    <p>Total: {{ soma_quantidades }}</p>
+{% endif %}
+  {% elif barcode %}
+    <p>Nenhum endereço encontrado para o produto de código de barras {{ barcode }}.</p>
+  {% endif %}
+{% endblock %}

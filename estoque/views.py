@@ -5,6 +5,9 @@ from .models import Produto, EnderecoEstoque
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django import forms
+from django.db.models import Sum
+from django.db import IntegrityError
+
 
 @login_required
 def HomePageView(request):
@@ -15,12 +18,17 @@ def cadastrar_produto(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Produto cadastrado com sucesso.')
-            return redirect('cadastrar_produto')
+            try:
+                form.save()
+                messages.success(request, 'Produto cadastrado com sucesso.')
+                return redirect('cadastrar_produto')
+            except IntegrityError:
+                form.add_error('barcode', 'Já existe um produto cadastrado com o mesmo código de barras.')
     else:
         form = ProdutoForm()
+
     return render(request, 'cadastrar_produto.html', {'form': form})
+
 
 class EditarProdutoForm(forms.ModelForm):
     class Meta:
@@ -94,9 +102,9 @@ def enderecar_produto(request):
             rua = form.cleaned_data['rua']
             andar = form.cleaned_data['andar']
             prateleira = form.cleaned_data['prateleira']
-
+            quantidade = form.cleaned_data['quantidade']
             produto = get_object_or_404(Produto, pk=produto_id)
-            endereco = EnderecoEstoque(produto=produto, rua=rua, andar=andar, prateleira=prateleira)
+            endereco = EnderecoEstoque(produto=produto, rua=rua, andar=andar, prateleira=prateleira, quantidade=quantidade)
             endereco.save()
 
             messages.success(request, 'O produto foi endereçado com sucesso.')
@@ -105,3 +113,21 @@ def enderecar_produto(request):
         form = EnderecarProdutoForm()
 
     return render(request, 'enderecar_produto.html', {'form': form})
+
+
+
+def localizar_produto(request):
+    if request.method == 'POST':
+        barcode = request.POST.get('barcode')
+
+        try:
+            produto = Produto.objects.get(barcode=barcode)
+            enderecos = EnderecoEstoque.objects.filter(produto=produto)
+            soma_quantidades = enderecos.aggregate(soma=Sum('quantidade')).get('soma')
+        except Produto.DoesNotExist:
+            enderecos = []
+            soma_quantidades = None
+
+        return render(request, 'localizar_endereco.html', {'enderecos': enderecos, 'barcode': barcode, 'soma_quantidades': soma_quantidades})
+
+    return render(request, 'localizar_endereco.html')
