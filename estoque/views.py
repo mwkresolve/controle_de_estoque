@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import ProdutoForm, EditarProdutoForm
-from .models import Produto
+from .forms import ProdutoForm, EditarProdutoForm, EnderecarProdutoForm
+from .models import Produto, EnderecoEstoque
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django import forms
@@ -81,3 +81,27 @@ def editar_produto(request, produto_id):
 
     context = {'form': form}
     return render(request, 'editar_produto.html', context)
+
+
+
+
+
+def enderecar_produto(request):
+    if request.method == 'POST':
+        form = EnderecarProdutoForm(request.POST)
+        if form.is_valid():
+            produto_id = form.cleaned_data['produto'].id
+            rua = form.cleaned_data['rua']
+            andar = form.cleaned_data['andar']
+            prateleira = form.cleaned_data['prateleira']
+
+            produto = get_object_or_404(Produto, pk=produto_id)
+            endereco = EnderecoEstoque(produto=produto, rua=rua, andar=andar, prateleira=prateleira)
+            endereco.save()
+
+            messages.success(request, 'O produto foi endereçado com sucesso.')
+            return redirect('enderecar_produto')
+    else:
+        form = EnderecarProdutoForm()
+
+    return render(request, 'enderecar_produto.html', {'form': form})
