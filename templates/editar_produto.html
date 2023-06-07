@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-header">
+          <h2>Editar Produto</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="{{ form.nome.id_for_label }}">Nome:</label>
+              {{ form.nome }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.descricao.id_for_label }}">Descrição:</label>
+              {{ form.descricao }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.barcode.id_for_label }}">Barcode:</label>
+              {{ form.barcode }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.quantidade.id_for_label }}">Quantidade:</label>
+              {{ form.quantidade }}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.data_fabricacao.id_for_label }}">Data de Fabricação:</label>
+              <input type="date" class="form-control" id="{{ form.data_fabricacao.id_for_label }}" name="{{ form.data_fabricacao.html_name }}" value="{{ form.instance.data_fabricacao|date:'Y-m-d' }}">
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.data_validade.id_for_label }}">Data de Validade:</label>
+              <input type="date" class="form-control" id="{{ form.data_validade.id_for_label }}" name="{{ form.data_validade.html_name }}" value="{{ form.instance.data_validade|date:'Y-m-d' }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </form>
+          {% if messages %}
+              {% for message in messages %}
+                  <div class="alert alert-success" role="alert">
+                      {{ message }}
+                  </div>
+              {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

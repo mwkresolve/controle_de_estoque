@@ -1,24 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Lista de Produtos</h1>{% if messages %}
+  <h1>Lista de Produtos</h1>
+  {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-success" role="alert">
-            {{ message }}
-        </div>
+      <div class="alert alert-success" role="alert">
+        {{ message }}
+      </div>
     {% endfor %}
-{% endif %}
-
+  {% endif %}
 
   <table class="table">
     <thead>
       <tr>
-        <th><a href="?sort=nome">Nome</a></th>
-        <th><a href="?sort=descricao">Descrição</a></th>
-        <th><a href="?sort=barcode">Barcode</a></th>
-        <th><a href="?sort=quantidade">Quantidade</a></th>
-        <th><a href="?sort=data_fabricacao">Data de Fabricação</a></th>
-        <th><a href="?sort=data_validade">Data de Validade</a></th>
+        <th>
+          <a href="?sort=nome&amp;direction={{ next_direction }}">Nome</a>
+        </th>
+        <th>
+          <a href="?sort=descricao&amp;direction={{ next_direction }}">Descrição</a>
+        </th>
+        <th>
+          <a href="?sort=barcode&amp;direction={{ next_direction }}">Barcode</a>
+        </th>
+        <th>
+          <a href="?sort=quantidade&amp;direction={{ next_direction }}">Quantidade</a>
+        </th>
+        <th>
+          <a href="?sort=data_fabricacao&amp;direction={{ next_direction }}">Data de Fabricação</a>
+        </th>
+        <th>
+          <a href="?sort=data_validade&amp;direction={{ next_direction }}">Data de Validade</a>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -31,35 +43,41 @@
         <td>{{ produto.data_fabricacao }}</td>
         <td>{{ produto.data_validade }}</td>
         <td>
-        <a href="{% url 'produto_delete' produto.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+          <form method="post" id="form-editar-produto-{{ produto.id }}" style="display: none;">
+            {% csrf_token %}
+            {{ form_editar_produto.as_p }}
+            <button type="submit">Salvar</button>
+          </form>
+          <a href="{% url 'editar_produto' produto.id %}" class="btn btn-primary btn-sm">Editar</a>
+          <a href="{% url 'produto_delete' produto.pk %}" class="btn btn-danger btn-sm">Excluir</a>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
-{% for produto in page_obj %}
+  {% for produto in page_obj %}
     <!-- Exibir informações do produto -->
-{% endfor %}
+  {% endfor %}
 
-<!-- Conteúdo posterior ao loop de produtos -->
+  <!-- Conteúdo posterior ao loop de produtos -->
 
-<!-- Links de paginação -->
-</br></br>
-<div class="pagination">
+  <!-- Links de paginação -->
+  </br></br>
+  <div class="pagination">
     <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; Primeira</a>
-            <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
-        {% endif %}
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; Primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+      {% endif %}
 
-        <span class="current-page">{{ page_obj.number }}</span>
+      <span class="current-page">{{ page_obj.number }}</span>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">próxima</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
-        {% endif %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">próxima</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+      {% endif %}
     </span>
-</div>
+  </div>
 
 {% endblock %}
